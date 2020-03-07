@@ -80,7 +80,6 @@ class FallService: Service(), SensorEventListener {
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
     }
-    var minA=100000000000.0
 
     override fun onSensorChanged(sensorEvent: SensorEvent?) {
 
@@ -104,35 +103,41 @@ class FallService: Service(), SensorEventListener {
                 linearAcceleration[1] = sensorEvent.values[1] - gravity[1]
                 linearAcceleration[2] = sensorEvent.values[2] - gravity[2]
 
+                println(linearAcceleration.sum())
 
-                minA=min(minA,abs(linearAcceleration.sum()))
-                if ((abs(linearAcceleration.sum()) < 0.5)) {
+                if (((linearAcceleration.sum()) < 0.5)&&linearAcceleration.sum()>-0) {
 
-                    print("works")
 
                     if (!(mediaPlayer.isPlaying)){
                         mediaPlayer.start()
                     }
                 }
-                println(minA.toString())
             }
             Sensor.TYPE_LIGHT->{
                 if(lightLastChange==null){
                     lightLastChange= true
+                    print("ok")
                 }
                 else if ((!(lightLastChange as Boolean))&&sensorEvent.values[0]>70){
                     lightLastChange=true
+                    print("hi")
                     if (!tts.isSpeaking){
                         tts.speak(getString(R.string.hi), TextToSpeech.QUEUE_ADD,null,"Hi")
                     }
                 }
                 else if (sensorEvent.values[0]<70 && lightLastChange as Boolean){
                     lightLastChange=false
+                    print("dark")
                 }
 
 
             }
         }
+    }
+
+    fun speakKotlin(){
+        if (!tts.isSpeaking){
+        tts.speak(getString(R.string.kotlin),TextToSpeech.QUEUE_ADD,null,"Kotlin")}
     }
 
 
